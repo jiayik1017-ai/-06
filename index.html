@@ -1,0 +1,1908 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>韓國代購進貨單</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --navy: #1a2233;
+    --navy-mid: #2c3a52;
+    --navy-light: #3d4f6e;
+    --coral: #e8634a;
+    --coral-light: #f7e8e5;
+    --gold: #c9a84c;
+    --gold-light: #fdf6e7;
+    --green: #3a8c6e;
+    --green-light: #e6f4ef;
+    --gray-bg: #f5f6f8;
+    --gray-line: #e8eaed;
+    --gray-text: #8a95a3;
+    --white: #ffffff;
+    --text: #1a2233;
+    --text-mid: #4a5568;
+    --radius: 12px;
+    --shadow: 0 2px 12px rgba(26,34,51,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Noto Sans TC', -apple-system, sans-serif;
+    background: var(--gray-bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 90px;
+  }
+
+  /* ── Header ── */
+  .app-header {
+    background: var(--navy);
+    color: white;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.25);
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px 10px;
+  }
+  .header-title {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .header-title h1 {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: white;
+  }
+  .header-title span {
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .header-btn {
+    background: var(--coral);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: opacity 0.15s;
+  }
+  .header-btn:active { opacity: 0.8; }
+
+  /* ── Tab Bar ── */
+  .tab-bar {
+    display: flex;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .tab-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.45);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 10px 4px 11px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+  }
+  .tab-btn.active {
+    color: white;
+    border-bottom-color: var(--coral);
+  }
+
+  /* ── Summary Bar ── */
+  .summary-bar {
+    background: white;
+    margin: 12px 14px 0;
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    box-shadow: var(--shadow);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+  .sum-item {
+    text-align: center;
+    padding: 0 8px;
+  }
+  .sum-item + .sum-item {
+    border-left: 1px solid var(--gray-line);
+  }
+  .sum-label {
+    font-size: 10px;
+    color: var(--gray-text);
+    margin-bottom: 4px;
+    letter-spacing: 0.02em;
+  }
+  .sum-value {
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--text);
+  }
+  .sum-value.coral { color: var(--coral); }
+  .sum-value.green { color: var(--green); }
+
+  /* ── Filter Section ── */
+  .filter-section {
+    padding: 12px 14px 0;
+  }
+  .filter-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: center;
+  }
+  .filter-select, .filter-input {
+    flex: 1;
+    background: white;
+    border: 1px solid var(--gray-line);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text);
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a95a3' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 28px;
+    cursor: pointer;
+  }
+  .filter-input {
+    background-image: none;
+    padding-right: 12px;
+    cursor: text;
+    type: date;
+  }
+  input[type="date"].filter-input {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238a95a3' stroke-width='2'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 32px;
+  }
+  .filter-clear {
+    background: var(--gray-bg);
+    border: 1px solid var(--gray-line);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 12px;
+    font-family: inherit;
+    color: var(--gray-text);
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .filter-clear:active { opacity: 0.7; }
+
+  /* ── List Section ── */
+  .list-section {
+    padding: 12px 14px 0;
+  }
+  .list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .list-header-label {
+    font-size: 11px;
+    color: var(--gray-text);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .list-count {
+    font-size: 11px;
+    color: var(--gray-text);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* ── Order Card ── */
+  .order-card {
+    background: white;
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.12s;
+  }
+  .order-card:active { transform: scale(0.985); }
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    padding: 13px 14px 11px;
+    gap: 10px;
+  }
+  .store-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+    font-weight: 600;
+  }
+  .card-main { flex: 1; min-width: 0; }
+  .card-row1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3px;
+  }
+  .card-store-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 160px;
+  }
+  .card-twn {
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--coral);
+  }
+  .card-row2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .card-meta {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .card-date {
+    font-size: 11px;
+    color: var(--gray-text);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .card-currency {
+    font-size: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .currency-krw { background: #eef3ff; color: #3b5bdb; }
+  .currency-usd { background: #e6f4ef; color: #2f7d57; }
+  .currency-cny { background: #fff4e0; color: #c07d00; }
+  .currency-twd { background: var(--gray-bg); color: var(--gray-text); }
+  .card-foreign {
+    font-size: 11px;
+    color: var(--gray-text);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .card-bottom {
+    border-top: 1px solid var(--gray-line);
+    padding: 8px 14px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .status-pill {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 99px;
+    letter-spacing: 0.02em;
+  }
+  .status-pending { background: var(--gold-light); color: #a07820; }
+  .status-received { background: var(--green-light); color: var(--green); }
+  .status-issue { background: #fee; color: #c0392b; }
+  .card-note {
+    font-size: 11px;
+    color: var(--gray-text);
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ── Empty State ── */
+  .empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--gray-text);
+  }
+  .empty-icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-title { font-size: 15px; font-weight: 500; color: var(--text-mid); margin-bottom: 6px; }
+  .empty-sub { font-size: 13px; line-height: 1.6; }
+
+  /* ── Bottom Nav ── */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid var(--gray-line);
+    display: flex;
+    z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  .nav-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    gap: 3px;
+    color: var(--gray-text);
+    font-family: inherit;
+    font-size: 10px;
+    transition: color 0.15s;
+  }
+  .nav-btn.active { color: var(--coral); }
+  .nav-icon { font-size: 20px; line-height: 1; }
+
+  /* ── Modal / Drawer ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .modal-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 18px 18px 0 0;
+    z-index: 201;
+    max-height: 92vh;
+    overflow-y: auto;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  .modal-sheet.open {
+    transform: translateY(0);
+  }
+  .sheet-handle {
+    width: 36px;
+    height: 4px;
+    background: var(--gray-line);
+    border-radius: 2px;
+    margin: 10px auto 0;
+  }
+  .sheet-header {
+    padding: 14px 18px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--gray-line);
+  }
+  .sheet-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .sheet-close {
+    background: var(--gray-bg);
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+    color: var(--text-mid);
+  }
+  .sheet-body {
+    padding: 16px 18px;
+    padding-bottom: calc(env(safe-area-inset-bottom, 0) + 24px);
+  }
+
+  /* ── Form Fields ── */
+  .form-group {
+    margin-bottom: 16px;
+  }
+  .form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-mid);
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
+  }
+  .form-label .required {
+    color: var(--coral);
+    margin-left: 2px;
+  }
+  .form-control {
+    width: 100%;
+    background: var(--gray-bg);
+    border: 1.5px solid var(--gray-line);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--text);
+    transition: border-color 0.15s;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  .form-control:focus {
+    outline: none;
+    border-color: var(--navy-light);
+    background: white;
+  }
+  select.form-control {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238a95a3' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-color: var(--gray-bg);
+    padding-right: 36px;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .form-hint {
+    font-size: 11px;
+    color: var(--gray-text);
+    margin-top: 5px;
+  }
+  textarea.form-control {
+    resize: none;
+    height: 72px;
+  }
+
+  .form-btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .btn-primary {
+    flex: 1;
+    background: var(--navy);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 13px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .btn-primary:active { opacity: 0.8; }
+  .btn-secondary {
+    background: var(--gray-bg);
+    color: var(--text-mid);
+    border: 1.5px solid var(--gray-line);
+    border-radius: 10px;
+    padding: 13px 18px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .btn-danger {
+    background: #fee;
+    color: #c0392b;
+    border: none;
+    border-radius: 10px;
+    padding: 13px 18px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  /* ── Detail Sheet ── */
+  .detail-store-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .detail-store-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .detail-store-info h2 {
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .detail-store-info p {
+    font-size: 12px;
+    color: var(--gray-text);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .detail-amount-box {
+    background: var(--gray-bg);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .detail-amount-left .label {
+    font-size: 11px;
+    color: var(--gray-text);
+    margin-bottom: 3px;
+  }
+  .detail-amount-left .value {
+    font-size: 22px;
+    font-weight: 600;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--coral);
+  }
+  .detail-amount-right {
+    text-align: right;
+  }
+  .detail-amount-right .label {
+    font-size: 11px;
+    color: var(--gray-text);
+    margin-bottom: 3px;
+  }
+  .detail-amount-right .value {
+    font-size: 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--text-mid);
+  }
+  .detail-rows table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .detail-rows td {
+    padding: 9px 0;
+    font-size: 13px;
+    border-bottom: 1px solid var(--gray-line);
+  }
+  .detail-rows tr:last-child td {
+    border-bottom: none;
+  }
+  .detail-rows td:first-child {
+    color: var(--gray-text);
+    width: 35%;
+  }
+  .detail-rows td:last-child {
+    font-weight: 500;
+    text-align: right;
+  }
+
+  /* ── Stats View ── */
+  .stats-section {
+    padding: 12px 14px 0;
+  }
+  .stats-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow);
+  }
+  .stats-card-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-text);
+    letter-spacing: 0.04em;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+  .store-stat-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--gray-line);
+  }
+  .store-stat-row:last-child { border-bottom: none; }
+  .store-stat-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .store-stat-name {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .store-stat-count {
+    font-size: 11px;
+    color: var(--gray-text);
+    margin-right: 6px;
+  }
+  .store-stat-amount {
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--coral);
+  }
+  .bar-track {
+    height: 4px;
+    background: var(--gray-line);
+    border-radius: 2px;
+    margin-top: 4px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* ── Upload Drop Zone ── */
+  .upload-drop-zone {
+    border: 2px dashed var(--gray-line);
+    border-radius: var(--radius);
+    padding: 28px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--gray-bg);
+    position: relative;
+  }
+  .upload-drop-zone.drag-over {
+    border-color: var(--navy-light);
+    background: #eef2ff;
+  }
+  .upload-drop-zone input[type=file] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+  .upload-icon { font-size: 32px; margin-bottom: 8px; }
+  .upload-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .upload-sub { font-size: 12px; color: var(--gray-text); line-height: 1.6; }
+  .upload-formats {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .fmt-tag {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .fmt-xlsx { background: #e6f4ef; color: var(--green); }
+  .fmt-csv  { background: #eef3ff; color: #3b5bdb; }
+  .fmt-json { background: var(--gold-light); color: #a07820; }
+
+  /* ── Preview Table ── */
+  .preview-wrap {
+    margin-top: 14px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--gray-line);
+    display: none;
+  }
+  .preview-header {
+    background: var(--navy);
+    color: white;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .preview-table-wrap {
+    overflow-x: auto;
+    max-height: 280px;
+    overflow-y: auto;
+  }
+  .preview-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    min-width: 480px;
+  }
+  .preview-table th {
+    background: var(--gray-bg);
+    padding: 7px 10px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-mid);
+    border-bottom: 1px solid var(--gray-line);
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+  }
+  .preview-table td {
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--gray-line);
+    white-space: nowrap;
+    color: var(--text);
+  }
+  .preview-table tr:last-child td { border-bottom: none; }
+  .preview-table tr:nth-child(even) td { background: var(--gray-bg); }
+  .row-ok td:first-child { border-left: 3px solid var(--green); }
+  .row-warn td:first-child { border-left: 3px solid var(--gold); }
+  .row-skip td:first-child { border-left: 3px solid #ddd; opacity: 0.5; }
+
+  .upload-actions {
+    display: none;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  /* toast */
+  .toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--navy);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 99px;
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 500;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* hide/show views */
+  .view { display: none; }
+  .view.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- App Header -->
+<header class="app-header">
+  <div class="header-top">
+    <div class="header-title">
+      <h1>🇰🇷 代購進貨單</h1>
+      <span id="totalCount">0 筆</span>
+    </div>
+    <button class="header-btn" onclick="openAddSheet()">＋ 新增</button>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchView('list', this)">📋 明細列表</button>
+    <button class="tab-btn" onclick="switchView('stats', this)">📊 統計分析</button>
+    <button class="tab-btn" onclick="switchView('export', this)">📤 匯出</button>
+  </div>
+</header>
+
+<!-- ────────────── LIST VIEW ────────────── -->
+<div id="view-list" class="view active">
+  <!-- Summary -->
+  <div class="summary-bar">
+    <div class="sum-item">
+      <div class="sum-label">總台幣</div>
+      <div class="sum-value coral" id="sumTWD">0</div>
+    </div>
+    <div class="sum-item">
+      <div class="sum-label">筆數</div>
+      <div class="sum-value" id="sumCount">0</div>
+    </div>
+    <div class="sum-item">
+      <div class="sum-label">待收</div>
+      <div class="sum-value" id="sumPending" style="color:var(--gold)">0</div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-section">
+    <div class="filter-row">
+      <select class="filter-select" id="filterStore" onchange="renderList()">
+        <option value="">🏪 全部免稅店</option>
+      </select>
+      <select class="filter-select" id="filterStatus" onchange="renderList()">
+        <option value="">全部狀態</option>
+        <option value="pending">待收貨</option>
+        <option value="received">已收到</option>
+        <option value="issue">有問題</option>
+      </select>
+    </div>
+    <div class="filter-row">
+      <input type="date" class="filter-input filter-select" id="filterDateFrom" onchange="renderList()" placeholder="開始日期">
+      <span style="font-size:12px;color:var(--gray-text);flex-shrink:0;">至</span>
+      <input type="date" class="filter-input filter-select" id="filterDateTo" onchange="renderList()">
+      <button class="filter-clear" onclick="clearFilters()">清除</button>
+    </div>
+  </div>
+
+  <!-- List -->
+  <div class="list-section">
+    <div class="list-header">
+      <span class="list-header-label">進貨記錄</span>
+      <span class="list-count" id="listCount">0 筆</span>
+    </div>
+    <div id="orderList"></div>
+  </div>
+</div>
+
+<!-- ────────────── STATS VIEW ────────────── -->
+<div id="view-stats" class="view">
+  <div class="stats-section" id="statsContent"></div>
+</div>
+
+<!-- ────────────── EXPORT VIEW ────────────── -->
+<div id="view-export" class="view">
+  <div class="stats-section">
+
+    <!-- Upload Card -->
+    <div class="stats-card">
+      <div class="stats-card-title">📥 上傳信用卡明細</div>
+      <p style="font-size:12px;color:var(--text-mid);line-height:1.7;margin-bottom:12px;">上傳永豐銀行信用卡 Excel / CSV 明細，系統會自動辨識免稅店並歸類匯入。</p>
+
+      <div class="upload-drop-zone" id="dropZone"
+        ondragover="handleDragOver(event)"
+        ondragleave="handleDragLeave(event)"
+        ondrop="handleDrop(event)">
+        <input type="file" accept=".xlsx,.xls,.csv" onchange="handleFileSelect(event)" id="uploadFileInput">
+        <div class="upload-icon">📂</div>
+        <div class="upload-title">點擊選擇或拖曳檔案至此</div>
+        <div class="upload-sub">支援永豐銀行信用卡明細 Excel 或 CSV</div>
+        <div class="upload-formats">
+          <span class="fmt-tag fmt-xlsx">XLSX</span>
+          <span class="fmt-tag fmt-xlsx">XLS</span>
+          <span class="fmt-tag fmt-csv">CSV</span>
+        </div>
+      </div>
+
+      <!-- Preview Table -->
+      <div class="preview-wrap" id="previewWrap">
+        <div class="preview-header">
+          <span id="previewTitle">解析結果</span>
+          <span id="previewBadge" style="font-size:11px;opacity:0.8"></span>
+        </div>
+        <div class="preview-table-wrap">
+          <table class="preview-table" id="previewTable"></table>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="upload-actions" id="uploadActions">
+        <button class="btn-secondary" onclick="resetUpload()">重新選擇</button>
+        <button class="btn-primary" id="confirmImportBtn" onclick="confirmImport()">確認匯入</button>
+      </div>
+    </div>
+
+    <!-- Export Card -->
+    <div class="stats-card">
+      <div class="stats-card-title">匯出 / 備份</div>
+      <p style="font-size:13px;color:var(--text-mid);line-height:1.7;margin-bottom:16px;">將所有資料匯出為 JSON 或 CSV，可用於備份或轉移。</p>
+      <button class="btn-primary" onclick="exportJSON()" style="width:100%;margin-bottom:10px;">⬇ 下載 JSON 備份檔</button>
+      <button class="btn-primary" onclick="exportCSV()" style="width:100%;background:var(--green);margin-bottom:10px;">📊 下載 CSV（試算表）</button>
+      <label class="btn-secondary" style="display:block;text-align:center;cursor:pointer;">
+        ⬆ 匯入 JSON 備份
+        <input type="file" accept=".json" onchange="importJSON(event)" style="display:none">
+      </label>
+    </div>
+
+    <div class="stats-card">
+      <div class="stats-card-title">危險操作</div>
+      <button class="btn-danger" onclick="clearAllData()" style="width:100%;">🗑 清除所有資料</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Bottom Nav ── -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" onclick="switchView('list', null, this)">
+    <span class="nav-icon">📋</span>列表
+  </button>
+  <button class="nav-btn" onclick="switchView('stats', null, this)">
+    <span class="nav-icon">📊</span>統計
+  </button>
+  <button class="nav-btn" onclick="openAddSheet()">
+    <span class="nav-icon" style="background:var(--coral);color:white;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:2px;">＋</span>新增
+  </button>
+  <button class="nav-btn" onclick="switchView('export', null, this)">
+    <span class="nav-icon">📤</span>匯出
+  </button>
+</nav>
+
+<!-- ── Modal Overlay ── -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeAllSheets()"></div>
+
+<!-- ── Add / Edit Sheet ── -->
+<div class="modal-sheet" id="addSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title" id="sheetTitle">新增進貨記錄</div>
+    <button class="sheet-close" onclick="closeAllSheets()">✕</button>
+  </div>
+  <div class="sheet-body">
+    <input type="hidden" id="editId">
+    <div class="form-group">
+      <label class="form-label">交易日期 <span class="required">*</span></label>
+      <input type="date" class="form-control" id="fDate">
+    </div>
+    <div class="form-group">
+      <label class="form-label">免稅店 <span class="required">*</span></label>
+      <select class="form-control" id="fStore">
+        <option value="">— 選擇免稅店 —</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">幣別 <span class="required">*</span></label>
+      <select class="form-control" id="fCurrency" onchange="toggleForeignField()">
+        <option value="TWD">TWD 台幣</option>
+        <option value="KRW">KRW 韓圜</option>
+        <option value="USD">USD 美金</option>
+        <option value="CNY">CNY 人民幣</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">台幣金額 <span class="required">*</span></label>
+        <input type="number" class="form-control" id="fAmountTWD" placeholder="0" inputmode="decimal">
+      </div>
+      <div class="form-group" id="foreignGroup">
+        <label class="form-label">外幣金額</label>
+        <input type="number" class="form-control" id="fAmountForeign" placeholder="0" inputmode="decimal">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">商品說明</label>
+      <input type="text" class="form-control" id="fDesc" placeholder="香水、保養品、包包…">
+    </div>
+    <div class="form-group">
+      <label class="form-label">狀態</label>
+      <select class="form-control" id="fStatus">
+        <option value="pending">待收貨</option>
+        <option value="received">已收到</option>
+        <option value="issue">有問題</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">備註</label>
+      <textarea class="form-control" id="fNote" placeholder="退稅、代購費、特殊說明…"></textarea>
+    </div>
+    <div class="form-btn-row" id="formBtns">
+      <button class="btn-secondary" onclick="closeAllSheets()">取消</button>
+      <button class="btn-primary" onclick="saveOrder()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Detail Sheet ── -->
+<div class="modal-sheet" id="detailSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title">進貨明細</div>
+    <button class="sheet-close" onclick="closeAllSheets()">✕</button>
+  </div>
+  <div class="sheet-body" id="detailBody"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════
+//  DATA LAYER
+// ══════════════════════════════════
+const STORAGE_KEY = 'korea_proxy_orders_v1';
+const STORES_KEY = 'korea_proxy_stores_v1';
+
+const DEFAULT_STORES = [
+  { id: 'shinsegae', name: '新世界免稅店', short: '新世', emoji: '🛍', color: '#2c3a52', bg: '#e8eaed' },
+  { id: 'shilla_main', name: '新羅免稅店', short: '新羅', emoji: '👑', color: '#7b3fa0', bg: '#f3e8ff' },
+  { id: 'ipark_shilla', name: 'I-PARK 新羅', short: 'IP', emoji: '🏨', color: '#2d5fa6', bg: '#dbeafe' },
+  { id: 'hyundai', name: '現代免稅店', short: '現代', emoji: '🏬', color: '#196f3d', bg: '#d4efdf' },
+  { id: 'lotte', name: '樂天免稅店', short: '樂天', emoji: '🎡', color: '#c0392b', bg: '#fde8e8' },
+  { id: 'lotte_shop', name: 'LOTTE SHOPPING', short: 'LS', emoji: '🛒', color: '#c0392b', bg: '#fee' },
+  { id: 'olive_young', name: 'Olive Young', short: 'OY', emoji: '🌿', color: '#27ae60', bg: '#d5f5e3' },
+  { id: 'lottemart', name: 'Lotte Mart', short: 'LM', emoji: '🛒', color: '#e74c3c', bg: '#fde8e8' },
+  { id: 'coupang', name: 'Coupang', short: 'CP', emoji: '🚀', color: '#e94e1b', bg: '#fde9e3' },
+  { id: 'jingdong', name: '京東 JD', short: 'JD', emoji: '📦', color: '#cc1111', bg: '#fee' },
+  { id: 'taobao', name: '淘寶 Taobao', short: 'TB', emoji: '🧧', color: '#f56000', bg: '#fff0e0' },
+  { id: 'panduo', name: '拼多多 Panduo', short: 'PD', emoji: '🎁', color: '#c0392b', bg: '#fde8e8' },
+  { id: 'other', name: '其他', short: '其他', emoji: '🏪', color: '#5d6d7e', bg: '#f0f3f5' },
+];
+
+let orders = [];
+let stores = [];
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    orders = raw ? JSON.parse(raw) : [];
+  } catch { orders = []; }
+  try {
+    const raw = localStorage.getItem(STORES_KEY);
+    stores = raw ? JSON.parse(raw) : [...DEFAULT_STORES];
+  } catch { stores = [...DEFAULT_STORES]; }
+}
+
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
+}
+
+function getStore(id) {
+  return stores.find(s => s.id === id) || stores.find(s => s.id === 'other');
+}
+
+function genId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+}
+
+// ══════════════════════════════════
+//  INIT
+// ══════════════════════════════════
+function init() {
+  loadData();
+  autoImportIfEmpty();
+  populateStoreSelects();
+  setDefaultDate();
+  renderList();
+  renderStats();
+}
+
+function setDefaultDate() {
+  const today = new Date().toISOString().slice(0, 10);
+  document.getElementById('fDate').value = today;
+}
+
+function populateStoreSelects() {
+  const fStore = document.getElementById('fStore');
+  const filterStore = document.getElementById('filterStore');
+  fStore.innerHTML = '<option value="">— 選擇免稅店 —</option>';
+  filterStore.innerHTML = '<option value="">🏪 全部免稅店</option>';
+  stores.forEach(s => {
+    fStore.innerHTML += `<option value="${s.id}">${s.emoji} ${s.name}</option>`;
+    filterStore.innerHTML += `<option value="${s.id}">${s.emoji} ${s.name}</option>`;
+  });
+}
+
+// ══════════════════════════════════
+//  VIEWS
+// ══════════════════════════════════
+let activeView = 'list';
+function switchView(name, tabEl, navEl) {
+  activeView = name;
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if (tabEl) tabEl.classList.add('active');
+  if (navEl) navEl.classList.add('active');
+  if (name === 'stats') renderStats();
+}
+
+// ══════════════════════════════════
+//  FILTER & RENDER LIST
+// ══════════════════════════════════
+function getFilters() {
+  return {
+    store: document.getElementById('filterStore').value,
+    status: document.getElementById('filterStatus').value,
+    dateFrom: document.getElementById('filterDateFrom').value,
+    dateTo: document.getElementById('filterDateTo').value,
+  };
+}
+
+function clearFilters() {
+  document.getElementById('filterStore').value = '';
+  document.getElementById('filterStatus').value = '';
+  document.getElementById('filterDateFrom').value = '';
+  document.getElementById('filterDateTo').value = '';
+  renderList();
+}
+
+function getFiltered() {
+  const f = getFilters();
+  return orders.filter(o => {
+    if (f.store && o.storeId !== f.store) return false;
+    if (f.status && o.status !== f.status) return false;
+    if (f.dateFrom && o.date < f.dateFrom) return false;
+    if (f.dateTo && o.date > f.dateTo) return false;
+    return true;
+  }).sort((a, b) => b.date.localeCompare(a.date) || b.createdAt - a.createdAt);
+}
+
+function renderList() {
+  const filtered = getFiltered();
+  const container = document.getElementById('orderList');
+  document.getElementById('totalCount').textContent = orders.length + ' 筆';
+  document.getElementById('listCount').textContent = filtered.length + ' 筆';
+
+  // summary
+  const totalTWD = filtered.reduce((s, o) => s + (o.amountTWD > 0 ? o.amountTWD : 0), 0);
+  const pendingCount = filtered.filter(o => o.status === 'pending').length;
+  document.getElementById('sumTWD').textContent = 'NT$' + totalTWD.toLocaleString();
+  document.getElementById('sumCount').textContent = filtered.length;
+  document.getElementById('sumPending').textContent = pendingCount;
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">📭</div>
+      <div class="empty-title">沒有符合的記錄</div>
+      <div class="empty-sub">調整篩選條件或點右上角「+ 新增」<br>開始記錄進貨明細</div>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map(o => {
+    const store = getStore(o.storeId);
+    const statusMap = {
+      pending: ['status-pending', '待收貨'],
+      received: ['status-received', '已收到'],
+      issue: ['status-issue', '有問題'],
+    };
+    const [statusClass, statusLabel] = statusMap[o.status] || statusMap.pending;
+    const currClass = { KRW:'currency-krw', USD:'currency-usd', CNY:'currency-cny', TWD:'currency-twd' }[o.currency] || 'currency-twd';
+    const foreignStr = o.currency !== 'TWD' && o.amountForeign
+      ? `<span class="card-currency ${currClass}">${o.currency}</span><span class="card-foreign">${Number(o.amountForeign).toLocaleString()}</span>`
+      : `<span class="card-currency currency-twd">TWD</span>`;
+
+    return `<div class="order-card" onclick="openDetail('${o.id}')">
+      <div class="card-top">
+        <div class="store-icon" style="background:${store.bg};color:${store.color}">${store.short}</div>
+        <div class="card-main">
+          <div class="card-row1">
+            <div class="card-store-name">${store.emoji} ${store.name}</div>
+            <div class="card-twn">${o.amountTWD > 0 ? 'NT$' + Number(o.amountTWD).toLocaleString() : o.amountTWD < 0 ? '−NT$'+Math.abs(o.amountTWD).toLocaleString() : '-'}</div>
+          </div>
+          <div class="card-row2">
+            <div class="card-meta">
+              <span class="card-date">${o.date}</span>
+              ${foreignStr}
+            </div>
+          </div>
+          ${o.desc ? `<div style="font-size:12px;color:var(--text-mid);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${o.desc}</div>` : ''}
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="status-pill ${statusClass}">${statusLabel}</span>
+        ${o.note ? `<span class="card-note">${o.note}</span>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════
+//  STATS
+// ══════════════════════════════════
+function renderStats() {
+  const positiveOrders = orders.filter(o => o.amountTWD > 0);
+  const totalTWD = positiveOrders.reduce((s, o) => s + o.amountTWD, 0);
+
+  // per store
+  const storeMap = {};
+  orders.forEach(o => {
+    if (!storeMap[o.storeId]) storeMap[o.storeId] = { total: 0, count: 0 };
+    if (o.amountTWD > 0) storeMap[o.storeId].total += o.amountTWD;
+    storeMap[o.storeId].count++;
+  });
+
+  const storeRows = Object.entries(storeMap)
+    .sort((a, b) => b[1].total - a[1].total)
+    .map(([sid, data]) => {
+      const store = getStore(sid);
+      const pct = totalTWD > 0 ? (data.total / totalTWD * 100) : 0;
+      return `<div class="store-stat-row">
+        <div class="store-stat-icon" style="background:${store.bg};color:${store.color}">${store.short}</div>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span class="store-stat-name">${store.emoji} ${store.name}</span>
+            <span class="store-stat-amount">NT$${data.total.toLocaleString()}</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="width:${pct.toFixed(1)}%;background:${store.color}"></div></div>
+        </div>
+        <span class="store-stat-count" style="margin-left:6px">${data.count}筆</span>
+      </div>`;
+    }).join('');
+
+  // currency breakdown
+  const currMap = {};
+  orders.forEach(o => {
+    if (o.currency !== 'TWD' && o.amountForeign > 0) {
+      if (!currMap[o.currency]) currMap[o.currency] = 0;
+      currMap[o.currency] += Number(o.amountForeign);
+    }
+  });
+  const currColors = { KRW: '#3b5bdb', USD: '#2f7d57', CNY: '#c07d00' };
+  const currRows = Object.entries(currMap).map(([c, v]) =>
+    `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--gray-line);font-size:13px">
+      <span style="color:var(--text-mid)">${c}</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:${currColors[c]||'#555'}">${v.toLocaleString(undefined,{maximumFractionDigits:2})}</span>
+    </div>`
+  ).join('');
+
+  // status
+  const statusCounts = { pending: 0, received: 0, issue: 0 };
+  orders.forEach(o => { if (statusCounts[o.status] !== undefined) statusCounts[o.status]++; });
+
+  document.getElementById('statsContent').innerHTML = `
+    <div class="stats-card">
+      <div class="stats-card-title">總覽</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+        <div style="background:var(--gray-bg);border-radius:8px;padding:12px 10px;text-align:center">
+          <div style="font-size:10px;color:var(--gray-text);margin-bottom:4px">總台幣</div>
+          <div style="font-size:15px;font-weight:600;font-family:'IBM Plex Mono',monospace;color:var(--coral)">NT$${totalTWD.toLocaleString()}</div>
+        </div>
+        <div style="background:var(--gray-bg);border-radius:8px;padding:12px 10px;text-align:center">
+          <div style="font-size:10px;color:var(--gray-text);margin-bottom:4px">記錄筆數</div>
+          <div style="font-size:15px;font-weight:600;font-family:'IBM Plex Mono',monospace">${orders.length}</div>
+        </div>
+        <div style="background:var(--gray-bg);border-radius:8px;padding:12px 10px;text-align:center">
+          <div style="font-size:10px;color:var(--gray-text);margin-bottom:4px">免稅店數</div>
+          <div style="font-size:15px;font-weight:600;font-family:'IBM Plex Mono',monospace">${Object.keys(storeMap).length}</div>
+        </div>
+      </div>
+    </div>
+    ${storeRows ? `<div class="stats-card"><div class="stats-card-title">各免稅店消費</div>${storeRows}</div>` : ''}
+    ${currRows ? `<div class="stats-card"><div class="stats-card-title">外幣總計</div>${currRows}</div>` : ''}
+    <div class="stats-card">
+      <div class="stats-card-title">狀態分佈</div>
+      <div style="display:flex;gap:8px">
+        <div style="flex:1;background:var(--gold-light);border-radius:8px;padding:12px;text-align:center">
+          <div style="font-size:20px;font-weight:700;color:#a07820">${statusCounts.pending}</div>
+          <div style="font-size:11px;color:#a07820;margin-top:2px">待收貨</div>
+        </div>
+        <div style="flex:1;background:var(--green-light);border-radius:8px;padding:12px;text-align:center">
+          <div style="font-size:20px;font-weight:700;color:var(--green)">${statusCounts.received}</div>
+          <div style="font-size:11px;color:var(--green);margin-top:2px">已收到</div>
+        </div>
+        <div style="flex:1;background:#fee;border-radius:8px;padding:12px;text-align:center">
+          <div style="font-size:20px;font-weight:700;color:#c0392b">${statusCounts.issue}</div>
+          <div style="font-size:11px;color:#c0392b;margin-top:2px">有問題</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════
+//  ADD / EDIT SHEET
+// ══════════════════════════════════
+function openAddSheet() {
+  document.getElementById('sheetTitle').textContent = '新增進貨記錄';
+  document.getElementById('editId').value = '';
+  document.getElementById('fDate').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('fStore').value = '';
+  document.getElementById('fCurrency').value = 'KRW';
+  document.getElementById('fAmountTWD').value = '';
+  document.getElementById('fAmountForeign').value = '';
+  document.getElementById('fDesc').value = '';
+  document.getElementById('fStatus').value = 'pending';
+  document.getElementById('fNote').value = '';
+  document.getElementById('formBtns').innerHTML = `
+    <button class="btn-secondary" onclick="closeAllSheets()">取消</button>
+    <button class="btn-primary" onclick="saveOrder()">儲存</button>`;
+  toggleForeignField();
+  openSheet('addSheet');
+}
+
+function openEditSheet(id) {
+  const o = orders.find(x => x.id === id);
+  if (!o) return;
+  document.getElementById('sheetTitle').textContent = '編輯記錄';
+  document.getElementById('editId').value = id;
+  document.getElementById('fDate').value = o.date;
+  document.getElementById('fStore').value = o.storeId;
+  document.getElementById('fCurrency').value = o.currency;
+  document.getElementById('fAmountTWD').value = o.amountTWD;
+  document.getElementById('fAmountForeign').value = o.amountForeign || '';
+  document.getElementById('fDesc').value = o.desc || '';
+  document.getElementById('fStatus').value = o.status;
+  document.getElementById('fNote').value = o.note || '';
+  document.getElementById('formBtns').innerHTML = `
+    <button class="btn-danger" onclick="deleteOrder('${id}')">刪除</button>
+    <button class="btn-primary" onclick="saveOrder()">更新</button>`;
+  toggleForeignField();
+  closeAllSheets();
+  setTimeout(() => openSheet('addSheet'), 50);
+}
+
+function toggleForeignField() {
+  const cur = document.getElementById('fCurrency').value;
+  document.getElementById('foreignGroup').style.display = cur === 'TWD' ? 'none' : '';
+}
+
+function saveOrder() {
+  const date = document.getElementById('fDate').value;
+  const storeId = document.getElementById('fStore').value;
+  const currency = document.getElementById('fCurrency').value;
+  const amountTWD = parseFloat(document.getElementById('fAmountTWD').value);
+  const amountForeign = parseFloat(document.getElementById('fAmountForeign').value) || 0;
+  const desc = document.getElementById('fDesc').value.trim();
+  const status = document.getElementById('fStatus').value;
+  const note = document.getElementById('fNote').value.trim();
+  const editId = document.getElementById('editId').value;
+
+  if (!date || !storeId || isNaN(amountTWD)) {
+    showToast('請填寫日期、免稅店及台幣金額');
+    return;
+  }
+
+  if (editId) {
+    const idx = orders.findIndex(o => o.id === editId);
+    if (idx >= 0) {
+      orders[idx] = { ...orders[idx], date, storeId, currency, amountTWD, amountForeign, desc, status, note };
+    }
+  } else {
+    orders.push({ id: genId(), date, storeId, currency, amountTWD, amountForeign, desc, status, note, createdAt: Date.now() });
+  }
+
+  saveData();
+  renderList();
+  closeAllSheets();
+  showToast(editId ? '記錄已更新 ✓' : '已新增進貨記錄 ✓');
+}
+
+function deleteOrder(id) {
+  if (!confirm('確定要刪除這筆記錄？')) return;
+  orders = orders.filter(o => o.id !== id);
+  saveData();
+  renderList();
+  closeAllSheets();
+  showToast('已刪除');
+}
+
+// ══════════════════════════════════
+//  DETAIL SHEET
+// ══════════════════════════════════
+function openDetail(id) {
+  const o = orders.find(x => x.id === id);
+  if (!o) return;
+  const store = getStore(o.storeId);
+  const statusMap = { pending: ['status-pending','待收貨'], received:['status-received','已收到'], issue:['status-issue','有問題'] };
+  const [sc, sl] = statusMap[o.status] || statusMap.pending;
+  const foreignRow = o.currency !== 'TWD' && o.amountForeign
+    ? `<tr><td>外幣金額</td><td>${o.currency} ${Number(o.amountForeign).toLocaleString()}</td></tr>` : '';
+
+  document.getElementById('detailBody').innerHTML = `
+    <div class="detail-store-header">
+      <div class="detail-store-icon" style="background:${store.bg};color:${store.color}">${store.emoji}</div>
+      <div class="detail-store-info">
+        <h2>${store.name}</h2>
+        <p>${o.date}</p>
+      </div>
+    </div>
+    <div class="detail-amount-box">
+      <div class="detail-amount-left">
+        <div class="label">台幣金額</div>
+        <div class="value">${o.amountTWD > 0 ? 'NT$'+Number(o.amountTWD).toLocaleString() : o.amountTWD < 0 ? '−NT$'+Math.abs(o.amountTWD).toLocaleString() : 'NT$0'}</div>
+      </div>
+      ${o.currency !== 'TWD' && o.amountForeign ? `<div class="detail-amount-right"><div class="label">${o.currency}</div><div class="value">${Number(o.amountForeign).toLocaleString()}</div></div>` : ''}
+    </div>
+    <div class="detail-rows">
+      <table>
+        <tr><td>狀態</td><td><span class="status-pill ${sc}">${sl}</span></td></tr>
+        <tr><td>幣別</td><td>${o.currency}</td></tr>
+        ${foreignRow}
+        ${o.desc ? `<tr><td>商品說明</td><td>${o.desc}</td></tr>` : ''}
+        ${o.note ? `<tr><td>備註</td><td>${o.note}</td></tr>` : ''}
+        <tr><td>建立時間</td><td style="font-size:11px;color:var(--gray-text)">${new Date(o.createdAt).toLocaleString('zh-TW')}</td></tr>
+      </table>
+    </div>
+    <div class="form-btn-row" style="margin-top:20px">
+      <button class="btn-secondary" onclick="closeAllSheets()">關閉</button>
+      <button class="btn-primary" onclick="openEditSheet('${o.id}')">編輯</button>
+    </div>`;
+  openSheet('detailSheet');
+}
+
+// ══════════════════════════════════
+//  SHEET CONTROL
+// ══════════════════════════════════
+function openSheet(id) {
+  document.getElementById('modalOverlay').classList.add('open');
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAllSheets() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.querySelectorAll('.modal-sheet').forEach(s => s.classList.remove('open'));
+  document.body.style.overflow = '';
+}
+
+// ══════════════════════════════════
+//  EXPORT / IMPORT
+// ══════════════════════════════════
+function exportJSON() {
+  const data = { orders, stores, exportedAt: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `korea-proxy-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('JSON 已下載 ✓');
+}
+
+function exportCSV() {
+  const headers = ['交易日期','免稅店','台幣金額','幣別','外幣金額','商品說明','狀態','備註'];
+  const rows = orders.map(o => {
+    const store = getStore(o.storeId);
+    const statusMap = { pending:'待收貨', received:'已收到', issue:'有問題' };
+    return [o.date, store.name, o.amountTWD, o.currency, o.amountForeign || '', o.desc || '', statusMap[o.status] || '', o.note || '']
+      .map(v => `"${String(v).replace(/"/g,'""')}"`).join(',');
+  });
+  const csv = '\uFEFF' + [headers.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `korea-proxy-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('CSV 已下載 ✓');
+}
+
+function importJSON(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (data.orders && Array.isArray(data.orders)) {
+        if (!confirm(`即將匯入 ${data.orders.length} 筆記錄（將合併現有資料）。確定？`)) return;
+        const existingIds = new Set(orders.map(o => o.id));
+        data.orders.forEach(o => { if (!existingIds.has(o.id)) orders.push(o); });
+        saveData();
+        renderList();
+        showToast(`已匯入 ${data.orders.length} 筆 ✓`);
+      }
+    } catch { showToast('檔案格式錯誤'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+function clearAllData() {
+  if (!confirm('確定要清除所有資料？此操作無法復原！')) return;
+  orders = [];
+  saveData();
+  renderList();
+  showToast('已清除所有資料');
+}
+
+// ══════════════════════════════════
+//  TOAST
+// ══════════════════════════════════
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+
+// ══════════════════════════════════
+//  AUTO-IMPORT FROM XLSX (first run)
+// ══════════════════════════════════
+function autoImportIfEmpty() {
+  const existing = localStorage.getItem('korea_proxy_orders_v1');
+  if (existing) {
+    try {
+      const arr = JSON.parse(existing);
+      if (arr.length > 0) return; // already has data
+    } catch {}
+  }
+  // Embed data from xlsx
+  const importedOrders = [
+  {
+    "id": "19ecb33cfef55ab",
+    "date": "2026-05-13",
+    "storeId": "hyundai",
+    "currency": "USD",
+    "amountTWD": 5453,
+    "amountForeign": 172.75,
+    "desc": "HyundaiDFS 0221798830 KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747872000000
+  },
+  {
+    "id": "19ecb33cfef7w5d",
+    "date": "2026-05-15",
+    "storeId": "hyundai",
+    "currency": "USD",
+    "amountTWD": 1413,
+    "amountForeign": 44.81,
+    "desc": "HyundaiDFS 0221798830 KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747872060000
+  },
+  {
+    "id": "19ecb33cfeftxtl",
+    "date": "2026-05-20",
+    "storeId": "hyundai",
+    "currency": "USD",
+    "amountTWD": 3287,
+    "amountForeign": 103.69,
+    "desc": "HyundaiDFS 0221798830 KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747872120000
+  },
+  {
+    "id": "19ecb33cfef55dh",
+    "date": "2026-05-20",
+    "storeId": "hyundai",
+    "currency": "USD",
+    "amountTWD": 900,
+    "amountForeign": 28.4,
+    "desc": "HyundaiDFS 0221798830 KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747872180000
+  },
+  {
+    "id": "19ecb33cfeftc5g",
+    "date": "2026-05-20",
+    "storeId": "hyundai",
+    "currency": "USD",
+    "amountTWD": 1051,
+    "amountForeign": 33.29,
+    "desc": "HyundaiDFS 0221798830 KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747872240000
+  },
+  {
+    "id": "19ecb33cfef9lbl",
+    "date": "2026-05-20",
+    "storeId": "hyundai",
+    "currency": "USD",
+    "amountTWD": 2927,
+    "amountForeign": 92.67,
+    "desc": "HyundaiDFS 0221798830 KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747872300000
+  },
+  {
+    "id": "19ecb33cfefaz48",
+    "date": "2026-05-20",
+    "storeId": "hyundai",
+    "currency": "USD",
+    "amountTWD": -2274,
+    "amountForeign": -71.2,
+    "desc": "HyundaiDFS SEOUL KR",
+    "status": "received",
+    "note": "退刷",
+    "createdAt": 1747872360000
+  },
+  {
+    "id": "19ecb33cfef1vi5",
+    "date": "2026-05-13",
+    "storeId": "shinsegae",
+    "currency": "KRW",
+    "amountTWD": 9164,
+    "amountForeign": 427405,
+    "desc": "KCP_SHINSEGAE DUTY FREE_KSEOUL KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747872420000
+  },
+  {
+    "id": "19ecb33cfefzdy0",
+    "date": "2026-05-18",
+    "storeId": "shinsegae",
+    "currency": "KRW",
+    "amountTWD": 2178,
+    "amountForeign": 102934,
+    "desc": "KCP_SHINSEGAE DUTY FREE_KSEOUL KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747872480000
+  },
+  {
+    "id": "19ecb33cfefcuvm",
+    "date": "2026-05-19",
+    "storeId": "shinsegae",
+    "currency": "KRW",
+    "amountTWD": 1302,
+    "amountForeign": 61551,
+    "desc": "KCP_SHINSEGAE DUTY FREE_KSEOUL KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747872540000
+  },
+  {
+    "id": "19ecb33cfefhyyv",
+    "date": "2026-05-20",
+    "storeId": "shinsegae",
+    "currency": "KRW",
+    "amountTWD": 822,
+    "amountForeign": 38562,
+    "desc": "KCP_SHINSEGAE DUTY FREE_KSEOUL KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747872600000
+  },
+  {
+    "id": "19ecb33cfefyg9z",
+    "date": "2026-05-20",
+    "storeId": "shinsegae",
+    "currency": "KRW",
+    "amountTWD": 3263,
+    "amountForeign": 153172,
+    "desc": "KCP_SHINSEGAE DUTY FREE_KSEOUL KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747872660000
+  },
+  {
+    "id": "19ecb33cfefuwuy",
+    "date": "2026-05-20",
+    "storeId": "shinsegae",
+    "currency": "KRW",
+    "amountTWD": 695,
+    "amountForeign": 32623,
+    "desc": "KCP_SHINSEGAE DUTY FREE_KSEOUL KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747872720000
+  },
+  {
+    "id": "19ecb33cfefryh2",
+    "date": "2026-05-15",
+    "storeId": "lotte",
+    "currency": "USD",
+    "amountTWD": 1823,
+    "amountForeign": 57.8,
+    "desc": "KRP_LotteDFS 0221798830 KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747872780000
+  },
+  {
+    "id": "19ecb33cfef62iq",
+    "date": "2026-05-18",
+    "storeId": "lotte",
+    "currency": "USD",
+    "amountTWD": 1681,
+    "amountForeign": 53.26,
+    "desc": "KRP_LotteDFS 0221798830 KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747872840000
+  },
+  {
+    "id": "19ecb33cfeftceh",
+    "date": "2026-05-18",
+    "storeId": "lotte",
+    "currency": "KRW",
+    "amountTWD": 1251,
+    "amountForeign": 59100,
+    "desc": "LINEPAY*LOTTESHOPPING SEOUL KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747872900000
+  },
+  {
+    "id": "19ecb33cfefzvwm",
+    "date": "2026-05-18",
+    "storeId": "lotte",
+    "currency": "KRW",
+    "amountTWD": 882,
+    "amountForeign": 41700,
+    "desc": "LINEPAY*LOTTESHOPPING SEOUL KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747872960000
+  },
+  {
+    "id": "19ecb33cfef8of5",
+    "date": "2026-05-20",
+    "storeId": "lotte",
+    "currency": "USD",
+    "amountTWD": 370,
+    "amountForeign": 11.7,
+    "desc": "KRP_LotteDFS 0221798830 KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747873020000
+  },
+  {
+    "id": "19ecb33cfefqm1o",
+    "date": "2026-05-20",
+    "storeId": "shilla_main",
+    "currency": "KRW",
+    "amountTWD": 1444,
+    "amountForeign": 68192,
+    "desc": "THE SHILLA DUTYFREE 0216881110 KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747873080000
+  },
+  {
+    "id": "19ecb33cfefcgf7",
+    "date": "2026-05-20",
+    "storeId": "shilla_main",
+    "currency": "KRW",
+    "amountTWD": 2248,
+    "amountForeign": 105537,
+    "desc": "THE SHILLA DUTYFREE 0216881110 KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747873140000
+  },
+  {
+    "id": "19ecb33cfef6r1g",
+    "date": "2026-05-20",
+    "storeId": "shilla_main",
+    "currency": "KRW",
+    "amountTWD": 1986,
+    "amountForeign": 93225,
+    "desc": "THE SHILLA DUTYFREE 0216881110 KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747873200000
+  },
+  {
+    "id": "19ecb33cfef6b1m",
+    "date": "2026-05-20",
+    "storeId": "shilla_main",
+    "currency": "KRW",
+    "amountTWD": 397,
+    "amountForeign": 18762,
+    "desc": "THE SHILLA DUTYFREE 0216881110 KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747873260000
+  },
+  {
+    "id": "19ecb33cfefgxpc",
+    "date": "2026-05-20",
+    "storeId": "ipark_shilla",
+    "currency": "KRW",
+    "amountTWD": 351,
+    "amountForeign": 16492,
+    "desc": "I-PARK SHILLA DUTY FREE SEOUL KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747873320000
+  },
+  {
+    "id": "19ecb33cfefotj8",
+    "date": "2026-05-20",
+    "storeId": "ipark_shilla",
+    "currency": "KRW",
+    "amountTWD": 5504,
+    "amountForeign": 258344,
+    "desc": "I-PARK SHILLA DUTY FREE SEOUL KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747873380000
+  },
+  {
+    "id": "19ecb33cfeftgku",
+    "date": "2026-05-20",
+    "storeId": "ipark_shilla",
+    "currency": "KRW",
+    "amountTWD": 239,
+    "amountForeign": 11200,
+    "desc": "I-PARK SHILLA DUTY FREE SEOUL KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747873440000
+  },
+  {
+    "id": "19ecb33cfefg7vq",
+    "date": "2026-05-18",
+    "storeId": "olive_young",
+    "currency": "KRW",
+    "amountTWD": 146,
+    "amountForeign": 6900,
+    "desc": "LINEPAY*OLIVE YOUNG SEOUL KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747873500000
+  },
+  {
+    "id": "19ecb33cff0stun",
+    "date": "2026-05-18",
+    "storeId": "lottemart",
+    "currency": "KRW",
+    "amountTWD": 881,
+    "amountForeign": 41640,
+    "desc": "LINEPAY*LOTTEMART SEOUL KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747873560000
+  },
+  {
+    "id": "19ecb33cff0dtfa",
+    "date": "2026-05-17",
+    "storeId": "other",
+    "currency": "KRW",
+    "amountTWD": 144,
+    "amountForeign": 6800,
+    "desc": "LINEPAY*CU Seoul KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747873620000
+  },
+  {
+    "id": "19ecb33cff098ur",
+    "date": "2026-05-19",
+    "storeId": "other",
+    "currency": "KRW",
+    "amountTWD": 182,
+    "amountForeign": 8600,
+    "desc": "LINEPAY*CU Seoul KR",
+    "status": "pending",
+    "note": "",
+    "createdAt": 1747873680000
+  }
+];
+  localStorage.setItem('korea_proxy_orders_v1', JSON.stringify(importedOrders));
+  orders = importedOrders;
+  showToast('已自動載入 ' + importedOrders.length + ' 筆免稅店進貨記錄 ✓');
+}
+
+// ══════════════════════════════════
+//  START
+// ══════════════════════════════════
+init();
+</script>
+</body>
+</html>
